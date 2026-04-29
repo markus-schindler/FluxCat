@@ -37,6 +37,8 @@ Catalyst deactivation in fixed bed reactors is a complex, multi‑step process. 
 
 ## What the tool can do
 
+![plot](GUI.png)
+
 * **Interactive GUI** | Built with Kivy – cross‑platform, touch‑friendly.
 
 * **Parameter toggle buttons** | Reaction temperature, fluid density, poison level, outlet level, bed geometry, diffusion coefficients, etc.
@@ -101,8 +103,9 @@ The GUI window will appear. If you see a “Kivy not found” error, make sure t
 ├── FVSorption.py **Core model implementation (PDE solver)**<br/>
 ├── content.kv **Kivy layout file**<br/>
 ├── network.png **GUI’s background**<br/>
-├── solution.png	**Pre-computed general sample breakthrough curve**<br/>
-├── requirements.txt	**Python dependencies**<br/>
+├── solution.png **Pre-computed general sample breakthrough curve**<br/>
+├── GUI.png **GUI appearance**<br/>
+├── requirements.txt **Python dependencies**<br/>
 ├── README.md **This file**<br/>
 └── LICENSE **MIT license**
 
