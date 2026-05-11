@@ -54,7 +54,7 @@ Catalyst deactivation in fixed bed reactors is a complex, multi‑step process. 
  
 ### Clone the repo:
 ```
-git clone https://github.com/mschindler779/FluxCat.git
+git clone https://github.com/markus-schindler/FluxCat.git
 cd FluxCat
 ```
 
