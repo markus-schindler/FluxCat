@@ -50,6 +50,8 @@ Catalyst deactivation in fixed bed reactors is a complex, multi‑step process. 
 ### Prerequisites
 
 * python 3.8 – 3.13
+* kivy 2.1.0
+* numpy 2.3.5
 * pip (Python package manager)
  
 ### Clone the repo:
@@ -115,5 +117,5 @@ The GUI window will appear. If you see a “Kivy not found” error, make sure t
 
 This project is licensed under the MIT License - see the LICENSE file for details
 
-© 2025 Markus Schindler
+© 2026 Markus Schindler
 
