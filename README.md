@@ -3,7 +3,6 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit-license/)
 [![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
 
-
 **FluxCat** is a high-performance computational framework designed to simulate transient, multi-dimensional transport phenomena in porous media. At its core, it implements a robust **Finite Volume Method (FVM)** to solve non-linear Advection-Diffusion-Reaction equations.
 
 While the primary application is the prediction of catalyst degradation in fixed-bed reactors, the underlying engine is a generalized numerical solver capable of simulating any system governed by similar partial differential equations (PDEs).
@@ -11,7 +10,9 @@ While the primary application is the prediction of catalyst degradation in fixed
 **The primary goal of this project is to generate high-fidelity, physically consistent synthetic datasets to serve as "Ground Truth" for training fast-inference Machine Learning surrogate models.**
 
 ![plot](solution.png)
-*Figure 1: Plotted solution for a breakthrough curve pattern of a packed bed.*
+
+**Figure 1:** Plotted solution for a breakthrough curve pattern of a packed bed.
+
 
 ## Technical Highlights
 
@@ -37,7 +38,9 @@ FluxCat is engineered with a clear **separation of concerns**, following a decou
 *   **Data Normalization Layer:** A robust unit-conversion system that maps heterogeneous industrial inputs (Imperial/Metric) into a standardized SI-base for the solver, ensuring data integrity.
 
 ![plot](GUI.png)
-*Figure 2: Graphical User Interface.*
+
+**Figure 2**: Graphical User Interface.
+
 ---
 
 ## Tech Stack
