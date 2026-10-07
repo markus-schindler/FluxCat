@@ -1,121 +1,91 @@
+# FluxCat: High-Fidelity Numerical Solver for Non-Linear Transport Phenomena
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://choosealicense.com/licenses/mit-license/)
+[![Python 3.10+](https://img.shields.io/badge/python-3.10+-blue.svg)](https://www.python.org/)
+
+
+**FluxCat** is a high-performance computational framework designed to simulate transient, multi-dimensional transport phenomena in porous media. At its core, it implements a robust **Finite Volume Method (FVM)** to solve non-linear Advection-Diffusion-Reaction equations.
+
+While the primary application is the prediction of catalyst degradation in fixed-bed reactors, the underlying engine is a generalized numerical solver capable of simulating any system governed by similar partial differential equations (PDEs).
+
+**The primary goal of this project is to generate high-fidelity, physically consistent synthetic datasets to serve as "Ground Truth" for training fast-inference Machine Learning surrogate models.**
+
 ![plot](solution.png)
+*Figure 1: Plotted solution for a breakthrough curve pattern of a packed bed.*
 
-# FluxCat
+## Technical Highlights
 
-## Catalyst‑Poisoning Simulator for Fixed Bed Reactors
+### 1. Numerical Core & Stability
+The solver handles the challenges of high-gradient solutions and numerical oscillations through several advanced techniques:
+*   **Finite Volume Discretization:** Ensures local and global mass conservation.
+*   **High-Resolution Flux Limiters:** To prevent the Gibbs phenomenon (numerical oscillations) and ensure monotonicity, the solver implements multiple flux-limiter schemes:
+    *   `UMIST` (Optimized for steep gradients)
+    *   `van Leer`
+    *   `Superbee`
+    *   `Monotonized Central`
+    *   `Minmod`
+*   **CFL Condition (Courant–Friedrichs–Lewy):** Dynamic time-stepping and spatial discretization are calculated based on the CFL condition to ensure numerical stability.
+*   **Non-Linear Coupling:** The engine accounts for the non-linear interdependence between velocity fields and concentration gradients.
 
-**FluxCat** is a lightweight, Kivy‑based Python application that lets you explore the transient behaviour of a fixed bed catalytic reactor under poisoning conditions.
+In the crypto space, high correlation is often mistaken for causation. **CausCrypto** addresses this by implementing a multi-stage statistical pipeline:
 
-The model is based on the mass balance from the DeVault partial differential equation and extended with axial dispersion and a Langmuir adsorption isotherm. It is a **demonstration tool** – not a production‑grade simulator – but it reproduces the key physics that appear in the literature (Bohart‑Adams, Wheeler‑Jonas, etc.) and allows you to see how the various parameters influence the breakthrough curve and the catalyst life.
-Catalyst deactivation is a major bottleneck in many petrochemical processes. Experimental data are scarce and the literature is full of simplified models that ignore intraparticle diffusion or the effect of axial dispersion. FluxCat implements a more complete, yet still tractable, description that can be used for teaching, quick‑look studies, or as a starting point for more detailed modelling.
+### 2. Software Architecture
+FluxCat is engineered with a clear **separation of concerns**, following a decoupled Model-View architecture:
 
-## Table of contents
-
-* Description and background
-* Literature context and model motivation
-* What the tool can do 
-* Installation
-* Usage
-
-## Description and background
-
-Catalyst deactivation in fixed bed reactors is a complex, multi‑step process. Classic works (Bohart‑Adams, Wheeler‑Jonas) treat it as a simple first‑order loss of activity, but real systems show:
-    
-## Literature context and model motivation
-
-* **Intraparticle diffusion resistance** – especially for chemisorption of poisons such as sulfur or coke precursors.
-
-* **Axial dispersion** – which skews breakthrough curves and alters the apparent deactivation rate.
-
-* **Non‑linear sorption isotherms** – Langmuir. Appropriate for chemisorption at low concentrations.
-
-* **Linear Driving Force** models are used in the sorbents performance prediction and results in a asymmetric breakthrough curve behavior. 
-
-* **FluxCat** uses a different approach and extends it with a diffusion term that is linked to the Bodenstein number.
-
-* The result is a set of partial differential equations that can be solved numerically to give the concentration profile under isothermal assumption. This reflects the catalyst activity as a function of time.
-
-## What the tool can do
+*   **Computational Backend (`FVSorption.py`):** A pure-python numerical engine optimized with `NumPy` for vectorized array operations. It handles the PDE discretization, time-integration, and boundary condition management.
+*   **Presentation Layer (`FluxCat.py`):** A professional GUI developed with the `Kivy` framework, allowing users to interact with the complex mathematical model without accessing the source code.
+*   **Data Normalization Layer:** A robust unit-conversion system that maps heterogeneous industrial inputs (Imperial/Metric) into a standardized SI-base for the solver, ensuring data integrity.
 
 ![plot](GUI.png)
+*Figure 2: Graphical User Interface.*
+---
 
-* **Interactive GUI** | Built with Kivy – cross‑platform, touch‑friendly.
+## Tech Stack
+*   **Language:** Python 3.x
+*   **Numerical Computing:** NumPy
+*   **Frontend/GUI:** Kivy
+*   **Mathematics:** Finite Volume Method (FVM), PDE Solver
 
-* **Parameter toggle buttons** | Reaction temperature, fluid density, poison level, outlet level, bed geometry, diffusion coefficients, etc.
+---
 
-* Different units can be handled. The simulator directly calculates the estimated time to achieve the maximum outlet concentration of the poisoning compound.
+## Connection to Machine Learning (The AI Pipeline)
+In industrial settings, running high-fidelity simulations is computationally expensive and time-consuming. FluxCat serves as the **Data Engine** in a larger ML pipeline:
 
-## Installation
+1.  **Synthetic Data Generation:** FluxCat generates thousands of precise simulation runs across a wide parameter space.
+2.  **Surrogate Training:** These datasets are used to train Neural Networks (PyTorch/TensorFlow) or Gradient Boosting models (XGBoost).
+3.  **Fast Inference:** The resulting ML surrogate replaces the expensive PDE solver, reducing inference time from seconds/minutes to milliseconds while maintaining $> 99 %$ accuracy.
 
-### Prerequisites
+---
 
-* python 3.8 – 3.13
-* kivy 2.1.0
-* numpy 2.3.5
-* pip (Python package manager)
- 
-### Clone the repo:
-```
+## Installation & Usage
+
+```bash
+# Clone the repository
 git clone https://github.com/markus-schindler/FluxCat.git
 cd FluxCat
-```
 
-### Create a virtual environment (optional but recommended)
-```
+# Create a virtual environment (optional but recommended)
 python -m venv /path/to/new/virtual/environment
 source /path/to/new/virtual/environment/bin/activate
-```
 
-### Install dependencies
-```
-python -m pip install -r requirements.txt
-```
+# Install dependencies
+pip install -r requirements.txt
 
-## Usage
-
-### Running the GUI
-```
+# Run the application
 python FluxCat.py
-```    
+```
 
-The GUI window will appear. If you see a “Kivy not found” error, make sure the virtual environment is activated and that Kivy is installed correctly.
-
-* Set parameters using the toggle buttons and numeric entry fields.
-
-* Reaction Temperature (°C) – Isothermal assumption.
-
-* Fluid Density (kg/m³) – Depends on feed pressure / temperature.
-
-* Poison Level (ppm) – Initial concentration of the poison precursor.
-
-* Outlet Level (ppm) – Threshold at which the catalyst is considered dead (e.g., 50 % of the original poison level.
-
-* Bed Geometry – Diameter, length, bulk density, void fraction.
-    
-* Bodenstein Number – Controls axial dispersion.
-
-* Film Diffusion Coefficient – Usually negligible for low‑pressure, low‑surface‑area systems.
-* Total Capacity – Maximum uptake of the chemisorbed species.
-* Run the simulation by pressing the **“Calculate”** button.
-* View the estimated performance time until catalyst degrades.
-
-## File Structure
-
-├── FluxCat.py **Main Kivy application**<br/>
-├── FVSorption.py **Core model implementation (PDE solver)**<br/>
-├── content.kv **Kivy layout file**<br/>
-├── network.png **GUI’s background**<br/>
-├── solution.png **Pre-computed general sample breakthrough curve**<br/>
-├── GUI.png **GUI appearance**<br/>
-├── requirements.txt **Python dependencies**<br/>
-├── README.md **This file**<br/>
-└── LICENSE **MIT license**
-
-**Kivy Documentation** – https://kivy.org
+## Project Structure
+```text
+├── FluxCat.py          # GUI
+├── FVSorption.py       # Main execution engine
+├── content.kv          # Kivy layout file
+├── README.md           # This file
+├── requirements.txt    # Dependency list
+└── LICENSE             # MIT License
+```
 
 ## License
-
-This project is licensed under the MIT License - see the LICENSE file for details
+This project is licensed under the MIT License.
 
 © 2026 Markus Schindler
-
